@@ -7,10 +7,10 @@ import (
 
 type TaskService interface {
 	CreateTaskService(task entities.Task) (entities.Task, error)
-	GetAllTasks() ([]entities.Task, error)
-	GetTask(id uint) (entities.Task, error)
-	UpdateTask(task entities.Task) (entities.Task, error)
-	DeleteTask(id uint) error
+	GetAllTasksService() ([]entities.Task, error)
+	GetTaskService(id uint) (entities.Task, error)
+	UpdateTaskService(task entities.Task) (entities.Task, error)
+	DeleteTaskService(id uint) error
 }
 
 type taskService struct {
@@ -21,18 +21,18 @@ func NewTaskService(repo repository.TaskRepository) TaskService {
 	return &taskService{repo: repo}
 }
 func (s *taskService) CreateTaskService(task entities.Task) (entities.Task, error) {
-	return s.repo.CreateReppo(task)
+	return s.repo.CreateRepo(task)
 }
-func (s *taskService) GetAllTasks() ([]entities.Task, error) {
-	return s.repo.GetAll()
+func (s *taskService) GetAllTasksService() ([]entities.Task, error) {
+	return s.repo.GetAllRepo()
 }
-func (s *taskService) GetTask(id uint) (entities.Task, error) {
-	return s.repo.GetById(id)
+func (s *taskService) GetTaskService(id uint) (entities.Task, error) {
+	return s.repo.GetByIdRepo(id)
 }
-func (s *taskService) UpdateTask(task entities.Task) (entities.Task, error) {
-	return s.repo.Update(task)
+func (s *taskService) UpdateTaskService(task entities.Task) (entities.Task, error) {
+	return s.repo.UpdateRepo(task)
 }
-func (s *taskService) DeleteTask(id uint) error {
-	return s.repo.Delete(id)
+func (s *taskService) DeleteTaskService(id uint) error {
+	return s.repo.DeleteRepo(id)
 }
 
