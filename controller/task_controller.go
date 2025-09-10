@@ -78,3 +78,4 @@ func (c *TaskController) DeleteTask(ctx *fiber.Ctx) error{
 		"message":"data deleted successfully",
 	})
 }
+

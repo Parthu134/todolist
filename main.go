@@ -5,6 +5,7 @@ import (
 	"todo-list/controller"
 	"todo-list/entities"
 	"todo-list/repository"
+	"todo-list/routes"
 	"todo-list/service"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,11 +24,8 @@ func main() {
 	taskService := service.NewTaskService(taskRepo)
 	taskController := controller.NewTaskController(taskService)
 	app := fiber.New()
-	app.Post("/tasks", taskController.CreateTaskHandler)
-	app.Get("/tasks", taskController.GetAllTasks)
-	app.Get("/tasks/:id", taskController.GetTask)
-	app.Put("/tasks/:id", taskController.UpdateTask)
-	app.Delete("/tasks/:id", taskController.DeleteTask)
-
+	routes.TaskRoutes(app, taskController)
 	app.Listen(":5000")
 }
+
+

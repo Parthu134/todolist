@@ -42,7 +42,8 @@ func (r *taskRepository) Update(task entities.Task) (entities.Task, error) {
 	return task, err
 }
 func (r *taskRepository) Delete(id uint) error {
-	var task entities.Task
-	err := r.db.Delete(task, id).Error
+	err := r.db.Delete(id).Error
 	return err
 }
+
+

@@ -35,3 +35,4 @@ func (s *taskService) UpdateTask(task entities.Task) (entities.Task, error) {
 func (s *taskService) DeleteTask(id uint) error {
 	return s.repo.Delete(id)
 }
+
