@@ -42,7 +42,7 @@ func (r *taskRepository) UpdateRepo(task entities.Task) (entities.Task, error) {
 	return task, err
 }
 func (r *taskRepository) DeleteRepo(id uint) error {
-	err := r.db.Delete(id).Error
+	err := r.db.Delete(&entities.Task{}, id).Error
 	return err
 }
 
