@@ -130,9 +130,6 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 func TestTaskRepository(t *testing.T) {
-	type args struct {
-		task entities.Task
-	}
 	tests := []struct {
 		name string
 		run  func(t *testing.T)
