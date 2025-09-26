@@ -16,10 +16,10 @@ import (
 
 type TaskCron struct {
 	MainRepo repository.TaskRepository
-	BackupRepo repository.TaskRepository
+	BackupRepo repository.TaskBackupRepository
 }
 
-func NewTaskCron(Main repository.TaskRepository, Backup repository.TaskRepository) *TaskCron {
+func NewTaskCron(Main repository.TaskRepository, Backup repository.TaskBackupRepository) *TaskCron {
 	return &TaskCron{
 		MainRepo: Main,
 		BackupRepo: Backup,
@@ -30,10 +30,11 @@ func (tc *TaskCron) Start(t time.Duration) {
 	// c.AddFunc("0 9 * * *", tc.SendDailyRemainders)
 	c.AddFunc("@every 1m", tc.SendDailyRemainders)
 	// c.AddFunc("0 0 * * *", tc.CleanExpiredTasks)
-	c.AddFunc("@every 2m", tc.CleanExpiredTasks)
-	c.AddFunc("0 2 * * 0", tc.BackupDatabase)
-	// c.AddFunc("@every 10m", tc.RefreshCaches)
-	c.AddFunc("@every 15m", tc.RefreshCaches)
+	c.AddFunc("@every 3m", tc.CleanExpiredTasks)
+	// c.AddFunc("0 2 * * 0", tc.BackupDatabase)
+	c.AddFunc("@every 2m", tc.BackupDatabase)
+	c.AddFunc("@every 4m", tc.RefreshCaches)
+	// c.AddFunc("@every 15m", tc.RefreshCaches)
 	c.Start()
 }
 func (c *TaskCron) SendDailyRemainders() {
@@ -58,16 +59,6 @@ func (c *TaskCron) SendDailyRemainders() {
 	}
 }
 
-func (c *TaskCron) CleanExpiredTasks() {
-	cutoff := time.Now().Add(-30 * 24 * time.Hour)
-	count, err := c.BackupRepo.DeleteTaskOlderThan(cutoff)
-	if err != nil {
-		log.Printf("cron clean expired time error: %v", err)
-		return
-	}
-	log.Printf("cron cleared %d expired token", count)
-}
-
 func (c *TaskCron) BackupDatabase() {
 	log.Println("cron database backup started")
 	tasks, err := c.MainRepo.GetAllRepo()
@@ -89,6 +80,16 @@ func (c *TaskCron) BackupDatabase() {
 		return
 	}
 	log.Println("backup saved inside postgres database")
+}
+
+func (c *TaskCron) CleanExpiredTasks() {
+	cutoff := time.Now().Add(-30 * 24 * time.Hour)
+	count, err := c.MainRepo.DeleteTaskOlderThan(cutoff)
+	if err != nil {
+		log.Printf("cron clean expired time error: %v", err)
+		return
+	}
+	log.Printf("cron cleared %d expired token", count)
 }
 
 func (c *TaskCron) RefreshCaches() {

@@ -8,9 +8,8 @@ import (
 )
 
 type TaskBackupRepository interface{
-	GetTaskDueBefore(deadline time.Time) ([]entities.Task, error)
-	DeleteTaskOlderThan(cutoff time.Time) (int64, error)
-
+	DeleteOldBackups(cutoff time.Time) (int64, error)
+	GetAllBackups() ([]entities.TaskBackup, error)
 	CreateBackupRepo(backup entities.TaskBackup) (entities.TaskBackup, error)
 }
 type taskBackupRepository struct {
@@ -26,13 +25,13 @@ func (r *taskBackupRepository) CreateBackupRepo(backup entities.TaskBackup) (ent
 	return backup, err
 }
 
-func (r *taskRepository) GetTaskDueBefore(deadline time.Time) ([]entities.Task, error) {
-	var tasks []entities.Task
-	err := r.db.Where("due_date <= ?", deadline).Find(&tasks).Error
-	return tasks, err
+func (r *taskBackupRepository) DeleteOldBackups(cutoff time.Time) (int64, error) {
+	result := r.DB.Where("backup_time <= ?", cutoff).Delete(&entities.TaskBackup{})
+	return result.RowsAffected, result.Error
 }
 
-func (r *taskRepository) DeleteTaskOlderThan(cutoff time.Time) (int64, error) {
-	result := r.db.Where("due_date <= ?", cutoff).Delete(&entities.Task{})
-	return result.RowsAffected, result.Error
+func (r *taskBackupRepository) GetAllBackups() ([]entities.TaskBackup, error) {
+	var backups []entities.TaskBackup
+	err := r.DB.Find(&backups).Error
+	return backups, err
 }

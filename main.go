@@ -47,7 +47,7 @@ func main() {
 		log.Fatalln("auto-migrate for backupdb filed", err)
 	}
 	mainRepo := repository.NewTaskRepository(mainDB)
-	backupRepo:=repository.NewTaskRepository(backupDB)
+	backupRepo:=repository.NewTaskBackupRepository(backupDB)
 	taskService := service.NewTaskService(mainRepo)
 	taskController := controller.NewTaskController(taskService)
 	cronService:=cron.NewTaskCron(mainRepo, backupRepo)
