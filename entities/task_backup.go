@@ -9,3 +9,7 @@ type TaskBackup struct {
 	Tasks      string   `gorm:"type:jsonb"`
 	BackupTime time.Time `json:"backup_time"`
 }
+
+func (TaskBackup) TableName() string {
+	return "task_backups"
+}

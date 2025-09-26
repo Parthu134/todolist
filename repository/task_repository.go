@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"time"
 	"todo-list/entities"
 
 	"gorm.io/gorm"
@@ -13,19 +12,13 @@ type TaskRepository interface {
 	GetByIdRepo(id uint) (entities.Task, error)
 	UpdateRepo(task entities.Task) (entities.Task, error)
 	DeleteRepo(id uint) error
-	GetTaskDueBefore(deadline time.Time) ([]entities.Task, error)
-	DeleteTaskOlderThan(cutoff time.Time) (int64, error)
-
-	CreateBackupRepo(backup entities.TaskBackup) (entities.TaskBackup, error)
 }
 
 type taskRepository struct {
 	db *gorm.DB
 }
 
-type TaskBackupRepository struct{
-	DB *gorm.DB
-}
+
 func NewTaskRepository(db *gorm.DB) TaskRepository {
 	return &taskRepository{db}
 }
@@ -54,36 +47,6 @@ func (r *taskRepository) DeleteRepo(id uint) error {
 	return err
 }
 
-func (r *taskRepository) GetTaskDueBefore(deadline time.Time) ([]entities.Task, error) {
-	var tasks []entities.Task
-	err := r.db.Where("due_date <= ?", deadline).Find(&tasks).Error
-	return tasks, err
-}
 
-func (r *taskRepository) DeleteTaskOlderThan(cutoff time.Time) (int64, error) {
-	result := r.db.Where("due_date <= ?", cutoff).Delete(&entities.Task{})
-	return result.RowsAffected, result.Error
-}
 
-func (r *taskRepository) CreateBackupRepo(backup entities.TaskBackup) (entities.TaskBackup, error) {
-	err := r.db.Create(&backup).Error
-	return backup, err
-}
 
-func (r *TaskBackupRepository) CreateBackupRepo(backup entities.TaskBackup) (entities.TaskBackup, error) {
-	err := r.DB.Create(&backup).Error
-	return backup, err
-}
-
-// DeleteOldBackups deletes backups older than cutoff
-func (r *TaskBackupRepository) DeleteOldBackups(cutoff time.Time) (int64, error) {
-	result := r.DB.Where("backup_time <= ?", cutoff).Delete(&entities.TaskBackup{})
-	return result.RowsAffected, result.Error
-}
-
-// GetAllBackups returns all backup records
-func (r *TaskBackupRepository) GetAllBackups() ([]entities.TaskBackup, error) {
-	var backups []entities.TaskBackup
-	err := r.DB.Find(&backups).Error
-	return backups, err
-}
