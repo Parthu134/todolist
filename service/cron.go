@@ -1,4 +1,4 @@
-package cron
+package service
 
 import (
 	"encoding/json"
@@ -7,21 +7,19 @@ import (
 	"time"
 	"todo-list/entities"
 	"todo-list/repository"
-	"todo-list/service"
-	"todo-list/utils"
 
 	"github.com/patrickmn/go-cache"
 	"github.com/robfig/cron/v3"
 )
 
 type TaskCron struct {
-	MainRepo repository.TaskRepository
+	MainRepo   repository.TaskRepository
 	BackupRepo repository.TaskBackupRepository
 }
 
 func NewTaskCron(Main repository.TaskRepository, Backup repository.TaskBackupRepository) *TaskCron {
 	return &TaskCron{
-		MainRepo: Main,
+		MainRepo:   Main,
 		BackupRepo: Backup,
 	}
 }
@@ -51,7 +49,7 @@ func (c *TaskCron) SendDailyRemainders() {
 		log.Printf("cron Remainder: Task %d: %s (due: %v)", t.ID, t.Title, t.DueDate)
 		Subject := fmt.Sprintf("Remainder, Task %s is due", t.Title)
 		body := fmt.Sprintf("Hello\n\nYour task \"%s\" is due on %v. \n\nDescription: %s", t.Title, t.DueDate, t.Description)
-		if err := utils.SendOtp(t.UserEmail, Subject, body); err != nil {
+		if err := SendOtp(t.UserEmail, Subject, body); err != nil {
 			log.Printf("failed to send mail to ID:%d, %v", t.ID, err)
 		} else {
 			log.Printf("Email sent to user ID: %d", t.ID)
@@ -98,6 +96,6 @@ func (c *TaskCron) RefreshCaches() {
 		log.Printf("cron refresh cache error: %v", err)
 		return
 	}
-	service.TodoCache.Set("allTasks", task, cache.DefaultExpiration)
+	TodoCache.Set("allTasks", task, cache.DefaultExpiration)
 	log.Println("log cache refreshed for allTasks")
 }

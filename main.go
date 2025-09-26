@@ -5,7 +5,6 @@ import (
 	"os"
 	"time"
 	"todo-list/controller"
-	"todo-list/cron"
 	"todo-list/entities"
 	"todo-list/repository"
 	"todo-list/routes"
@@ -50,7 +49,7 @@ func main() {
 	backupRepo:=repository.NewTaskBackupRepository(backupDB)
 	taskService := service.NewTaskService(mainRepo)
 	taskController := controller.NewTaskController(taskService)
-	cronService:=cron.NewTaskCron(mainRepo, backupRepo)
+	cronService:=service.NewTaskCron(mainRepo, backupRepo)
 	go cronService.Start(3*time.Hour)
 	app := fiber.New()
 	routes.TaskRoutes(app, taskController)
