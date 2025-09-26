@@ -27,8 +27,6 @@ func (tc *TaskCron) Start(t time.Duration) {
 	c := cron.New()
 	// c.AddFunc("0 9 * * *", tc.SendDailyRemainders)
 	c.AddFunc("@every 1m", tc.SendDailyRemainders)
-	// c.AddFunc("0 0 * * *", tc.CleanExpiredTasks)
-	c.AddFunc("@every 3m", tc.CleanExpiredTasks)
 	// c.AddFunc("0 2 * * 0", tc.BackupDatabase)
 	c.AddFunc("@every 2m", tc.BackupDatabase)
 	c.AddFunc("@every 4m", tc.RefreshCaches)
@@ -80,15 +78,6 @@ func (c *TaskCron) BackupDatabase() {
 	log.Println("backup saved inside postgres database")
 }
 
-func (c *TaskCron) CleanExpiredTasks() {
-	cutoff := time.Now().Add(-30 * 24 * time.Hour)
-	count, err := c.MainRepo.DeleteTaskOlderThan(cutoff)
-	if err != nil {
-		log.Printf("cron clean expired time error: %v", err)
-		return
-	}
-	log.Printf("cron cleared %d expired token", count)
-}
 
 func (c *TaskCron) RefreshCaches() {
 	task, err := c.MainRepo.GetAllRepo()
