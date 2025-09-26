@@ -103,4 +103,3 @@ func TestDeleteService(t *testing.T) {
 		t.Errorf("expected 0 tasks, got %d", len(tasks))
 	}
 }
-

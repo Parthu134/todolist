@@ -84,18 +84,6 @@
 // 	require.Error(t, err, "should return an error because record is not found")
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
 package repository_test
 
 import (
@@ -112,7 +100,7 @@ import (
 
 var (
 	testRepo repository.TaskRepository
-	db    *gorm.DB
+	db       *gorm.DB
 )
 
 func TestMain(m *testing.M) {
