@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"testing"
+	"time"
 	"todo-list/entities"
 	"todo-list/service"
 )
@@ -44,7 +45,12 @@ func (f *FakeRepo) DeleteRepo(id uint) error {
 	}
 	return nil
 }
-
+func(f *FakeRepo) GetTaskDueBefore(deadline time.Time) ([]entities.Task, error){
+	return f.tasks,nil 
+}
+func(f *FakeRepo) DeleteTaskOlderThan(cutoff time.Time) (int64,error){
+	return 0,nil 
+}
 func TestCreateTaskSevice(t *testing.T) {
 	repo := &FakeRepo{}
 	svc := service.NewTaskService(repo)
@@ -103,3 +109,4 @@ func TestDeleteService(t *testing.T) {
 		t.Errorf("expected 0 tasks, got %d", len(tasks))
 	}
 }
+

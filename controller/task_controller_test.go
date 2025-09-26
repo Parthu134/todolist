@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 	"todo-list/controller"
 	"todo-list/entities"
 	"todo-list/service"
@@ -51,7 +52,12 @@ func (f *FakeRepo) DeleteRepo(id uint) error{
 	}
 	return nil
 }
-
+func (f *FakeRepo) GetTaskDueBefore(deadline time.Time) ([]entities.Task, error){
+	return f.tasks,nil 
+}
+func(f *FakeRepo) DeleteTaskOlderThan(cutoff time.Time) (int64,error){
+	return 0,nil
+}
 func seedFakeRepo() *FakeRepo{
 	return &FakeRepo{
 		tasks:[]entities.Task{
