@@ -34,14 +34,14 @@ func (tc *TaskCron) Start(t time.Duration) {
 	c.Start()
 }
 func (c *TaskCron) SendDailyRemainders() {
-	log.Println("SendDailyRemainders triggered...")
+	log.Println("SendDailyRemainders triggered")
 	tasks, err := c.MainRepo.GetTaskDueBefore(time.Now().Add(24 * time.Hour))
 	if err != nil {
 		log.Printf("cron daily remainder error: %v", err)
 		return
 	}
 	if len(tasks) == 0 {
-		log.Println("No tasks due in next 24s")
+		log.Println("No tasks due in next 24h")
 	}
 	for _, t := range tasks {
 		log.Printf("cron Remainder: Task %d: %s (due: %v)", t.ID, t.Title, t.DueDate)
