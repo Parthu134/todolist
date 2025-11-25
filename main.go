@@ -51,6 +51,11 @@ func main() {
 	taskController := controller.NewTaskController(taskService)
 	cronService:=service.NewTaskCron(mainRepo, backupRepo)
 	go cronService.Start(3*time.Hour)
+
+	service.Init("localhost:6379", "", 0)
+	go service.Startworker()
+	go service.MonitorQueues()
+
 	app := fiber.New()
 	routes.TaskRoutes(app, taskController)
 	if err:=app.Listen(":5000"); err!=nil{
